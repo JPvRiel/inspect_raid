@@ -4,21 +4,21 @@ Bash script that checks linux software raid for the following:
 
 - Any degraded arrays
 - Array components with smart errors
-- Arrays with mixed SSD and HDD (rotational) components where the HDDs are not set to 'write-mostly' or SSDs are set to write-mostly.
+- Arrays with mixed SSD and HDD (rotational) components where the HDDs are not set to 'write-mostly' or SSDs are set to 'write-mostly'.
 
-It also helps provide context and understanding about array components dependancy and health using `lsblk` and `smartctl` commands.
+It also helps provide context and understanding about array components dependancy and health using `mdadm`, sysfs virtual block device attributes exposed (as per regex `^/sys/devices/virtual/block/(md[0-9]+)/md$`), `lsblk` and `smartctl` commands.
 
-While no subsitute for proper mdadm and smartmontools alerting, it helped me investigate/understand array compoistion and configuration mistakes with `writemostly` on a RAID1 that mixed SSD and HDD.
+While no subsitute for proper mdadm and smartmontools alerting, it helped me investigate/understand array compoistion and configuration mistakes with `write_mostly` on a RAID1 that mixed SSD and HDD.
 
 ## Usage
 
-Only show warnings
+Only show warnings:
 
 ```bash
 SHOW_INFO='n' inspect_raid.sh
 ```
 
-Show array info (default is `SHOW_INFO='y'`)
+Show array info (default is `SHOW_INFO='y'`):
 
 ```bash
 inspect_raid.sh
@@ -26,7 +26,7 @@ inspect_raid.sh
 
 ## Mixed SSD and HDD arrays and 'write-mostly'
 
-The `writemostly` option can make sense where an HDD is used for redundancy, e.g. in RAID1, next to a single SSD. Since the SSD is typically faster to read, I'd expect that `writemostly` will help avoid having the HDD slow down reads from the array and just leverage the SSD.
+The `write_mostly` option can make sense where an HDD is used for redundancy, e.g. in RAID1, next to a single SSD. Since the SSD is typically faster to read, I'd expect that `write_mostly` will help avoid having the HDD slow down reads from the array and just leverage the SSD.
 
 ## Example info output
 
@@ -83,6 +83,8 @@ INFO: raid member component composition: mixed
 INFO: raid member HDD component count: 4/5 (/dev/sdc /dev/sdd /dev/sde /dev/sdf)
 INFO: raid member SSD component count: 1/5 (/dev/sdb)
 ```
+
+As per the above, I had fairly complex RAID1 setup for the root OS partition where HDDs + one SSD were in a RAID1. I prefered using the SSD for reads.
 
 And at the end, each array components get smart info output as follows:
 
