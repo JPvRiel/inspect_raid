@@ -152,3 +152,11 @@ Num  Test_Description    Status                  Remaining  LifeTime(hours)  LBA
 ```
 
 As per the above, example, while the array appears okay, i.e. not degraded, but one of it's component devices isn't passing extedned offline read tests.
+
+## Bash script learnings
+
+Writing this script helped me learn/impliment:
+
+- Using bash arrays and appending to arrays, e.g. `d_list_all+=("/dev/$d")`
+- Using native Bash regex groups to extract substrings into variables (no grep), e.g. `[[ $f =~ .*/dev-(([^/0-9]+)[0-9]?)$ ]]` with `p=${BASH_REMATCH[1]}` and `d=${BASH_REMATCH[2]}` to extract outer and inner groups.
+- Using string globbing `*` to simply match substrings anywhere, e.g. `[[ $s == *write_mostly* ]]`
