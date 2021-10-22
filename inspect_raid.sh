@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # env switches (too lazy to parse parameters)
-show_info=${SHOW_INFO:='y'}
+show_info=${SHOW_INFO:='n'}
 
 # Term colour escape codes
 T_DEFAULT='\e[0m'
