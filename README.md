@@ -162,3 +162,27 @@ Writing this script helped me learn/impliment:
 - Using bash arrays and appending to arrays, e.g. `d_list_all+=("/dev/$d")`
 - Using native Bash regex groups to extract substrings into variables (no grep), e.g. `[[ $f =~ .*/dev-(([^/0-9]+)[0-9]?)$ ]]` with `p=${BASH_REMATCH[1]}` and `d=${BASH_REMATCH[2]}` to extract outer and inner groups.
 - Using string globbing `*` to simply match substrings anywhere, e.g. `[[ $s == *write_mostly* ]]`
+
+## Appendix
+
+### Listing vendor info
+
+To list raid devices model, serial and revision, given /dev/sdc, /dev/sdd, /dev/sde and /dev/sdf as raid members.
+
+```bash
+for d in c d e f; do echo "# /dev/sd$d"; lsblk -n -d -o NAME,VENDOR,MODEL,SERIAL,REV,SIZE "/dev/sd$d"; done
+```
+
+### Smart testing
+
+To run an extended test.
+
+```bash
+for d in c d e f; do echo "# /dev/sd$d"; lsblk -n -d -o NAME,VENDOR,MODEL,SERIAL,SIZE "/dev/sd$d"; sudo smartctl -t long "/dev/sd$d"; done
+```
+
+To display test results
+
+```bash
+for d in c d e f; do echo "# /dev/sd$d"; lsblk -n -d -o NAME,VENDOR,MODEL,SERIAL,SIZE "/dev/sd$d"; sudo smartctl --log=selftest "/dev/sd$d"; done
+```
